@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
-    protected User $user;
+    protected $user;
 
     public function setUp(): void
     {
@@ -28,30 +28,48 @@ class UserTest extends TestCase
         $this->user->setBirthday($birthday);
     }
 
+    /** 
+     * @test 
+     */ 
     public function isUserValid() {
         $this->assertTrue($this->user->isValid());
     }
 
+    /** 
+     * @test 
+     */ 
     public function isFirstNameUserValid() {
         $this->user->setFirstName("");
         $this->assertTrue($this->user->isValid());
     }
 
+    /** 
+     * @test 
+     */ 
     public function isLastNameUserValid() {
         $this->user->setLastName("");
         $this->assertTrue($this->user->isValid());
     }
 
+    /** 
+     * @test 
+     */ 
     public function isEmailUserValid() {
         $this->user->setEmail("td.com123");
         $this->assertTrue($this->user->isValid());
     }
 
+    /** 
+     * @test 
+     */ 
     public function isPasswordUserValid() {
         $this->user->setPassword("pwd");
         $this->assertTrue($this->user->isValid());
     }
 
+    /** 
+     * @test 
+     */ 
     public function isBirthdayUserValid() {
         $this->user->setBirthday(Carbon::now());
         $this->assertTrue($this->user->isValid());
