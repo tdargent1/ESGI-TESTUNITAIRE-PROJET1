@@ -35,21 +35,13 @@ class User implements UserInterface
      */
     private $password;
 
+    private $firstname;
+    private $lastname;
+    private $birthday;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
     }
 
     /**
@@ -101,7 +93,7 @@ class User implements UserInterface
      */
     public function getSalt()
     {
-        // not needed when using the "bcrypt" algorithm in security.yaml
+        
     }
 
     /**
@@ -109,7 +101,68 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+    
+    }
+
+    
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+ 
+    public function getLastname()
+    {
+        return $this->lastname;
+    }
+    public function setLastname($lastname)
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getBirthday()
+    {
+        return $this->birthday;
+    }
+    public function setBirthday($birthday)
+    {
+        $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    public function isValid() 
+    {
+        if (empty($this->lastname))
+            throw new Exception("Nom vide");
+
+        if (empty($this->firstname))
+            throw new Exception("Prénom vide");
+
+        if (! filter_var($this->email, FILTER_VALIDATE_EMAIL))
+            throw new Exception("Email vide");
+
+        // if (date_diff($this->birthDay, date("Y-m-d"))->format('Y') < 13)
+        //     throw new Exception("L'âge doit être supérieur à 13 ans");
+    
+        return true;
     }
 }
