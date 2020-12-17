@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use Exception;
 use App\Entity\Item;
+use App\Service\ToDoListService;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ToDoListRepository;
 use Doctrine\Common\Collections\Collection;
@@ -79,7 +81,7 @@ class ToDoList
         return $this->lastAddedTime;
     }
 
-    public function setLastAddedTime(\DateTimeInterface $updatedAt): self
+    public function setLastAddedTime(\DateTimeInterface $lastAddedTime): self
     {
         $this->lastAddedTime = $lastAddedTime;
 
@@ -94,13 +96,14 @@ class ToDoList
         return $this->items;
     }
 
-    public function addItem(Item $item): self
+    public function addItem(ToDoListService  $todoService, Item $item): self
     {
-        if (!$this->items->contains($item)) {
-            $this->items[] = $item;
-            $item->setToDoList($this);
-        }
+        $todoList = $todoService->getToDoListByUserId($this->user);
 
+        $todoService->checkTimeBetweenAdding($this->self, $item);
+
+        $this->items = $item;
+            
         return $this;
     }
 

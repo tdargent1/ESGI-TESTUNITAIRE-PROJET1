@@ -2,33 +2,50 @@
 
 namespace App\Service;
 
+use Exception;
+use Carbon\Carbon;
 use App\Entity\Item;
 use App\Entity\User;
 use App\Entity\ToDoList;
-use App\Repository\ToDoListRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ToDoListService
 {
-    public function add(User $user, Item $item) {
-        $toDoList = (new ToDoListRepository())->findBy([
-            'user_id' => $user->getId()
-        ]);
-        
-        if(checkTimeBetweenAdding(current($toDoList), $item)) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($item);
-            $em->flush();
+    private $em;
 
-            checkEnvoieMail();
-        }
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
     }
 
+    /**
+     * Retourne la ToDList du User
+     * 
+     * @param User $user
+     * 
+     * @return TodDoList
+     */
+    public function getToDoListByUserId(User $user) :ToDoList
+    {
+        $toDoListRepository = $this->em->getRepository(ToDoList::class);
+
+        return $toDoListRepository->findOneByUserId($user->getId());;
+    }
+
+    /**
+     * Check si le dernier ajout date d'au moins 30 minutes
+     * 
+     * @param ToDoList $toDoList
+     * @param Item $item
+     * 
+     * @return bool
+     */
     public function checkTimeBetweenAdding(ToDoList $toDoList, Item $item): bool
     {
-        if(Carbon::createFromTimestamp($ToDoList->getLastAddedTime)->toDateTimeString()->addMinutes(30).isAfter(
-            Carbon::createFromTimestamp($item->getCreatedDate)->toDateTimeString())) {
+        $lastAddedTime = Carbon::createFromTimestamp($toDoList->getLastAddedTime())->addMinutes(30);
+        
+        if($lastAddedTime->isAfter(Carbon::now()))
             throw new Exception("Vous devez attendre 30 minutes avant d'ajouter un nouvel élément");
-        }
 
         return true;
     }

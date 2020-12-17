@@ -19,22 +19,21 @@ class ToDoListRepository extends ServiceEntityRepository
         parent::__construct($registry, ToDoList::class);
     }
 
-    // /**
-    //  * @return ToDoList[] Returns an array of ToDoList objects
-    //  */
-    /*
-    public function findByExampleField($value)
+
+
+    /**
+     * @return ToDoList[] Returns an array with the user's todoList
+     */
+    public function findOneByUserId($userId)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('q')
+            ->andWhere('q.owner = :userId')
+            ->setParameter('userId', $userId)
+            ->setMaxResults(1)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?ToDoList
