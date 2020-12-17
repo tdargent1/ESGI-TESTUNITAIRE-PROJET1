@@ -2,78 +2,111 @@
 
 namespace Tests\AppBundle\Entity;
 
+use Exception;
 use Carbon\Carbon;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
-    protected $user;
+    protected User $user;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->initUser(
-            'Ludovic', 
-            'Collignon', 
-            'lud@gmail.com', 
-            'password123', 
-            Carbon::createFromFormat('Y-m-d', '1998-06-21')
-        );
-    }
-
-    public function initUser($firstName, $lastName, $email, $password, $birthday) {
-        $this->user->setFirstName($firstName);
-        $this->user->setLastName($lastName);
-        $this->user->setEmail($email);
-        $this->user->setPassword($password);
-        $this->user->setBirthday($birthday);
+        $this->user = new User();
+        $this->user->setFirstName('Ludovic');
+        $this->user->setLastName('Collignon');
+        $this->user->setEmail('lud@gmail.com');
+        $this->user->setPassword('password123');
+        $this->user->setBirthday(Carbon::create(1998, 6, 21));
     }
 
     /** 
+     * Test la méthode isValid() pour un cas de user valide
+     * 
      * @test 
      */ 
-    public function isUserValid() {
+    public function testUserValid() {
         $this->assertTrue($this->user->isValid());
     }
 
     /** 
+     * Test la méthode isValid() pour un cas de user non valide : firstName vide
+     * 
      * @test 
      */ 
-    public function isFirstNameUserValid() {
+    public function testFirstNameUserEmpty() {
         $this->user->setFirstName("");
-        $this->assertTrue($this->user->isValid());
+        $this->expectException(Exception::class);
+        $this->user->isValid();   
     }
 
     /** 
+     * Test la méthode isValid() pour un cas de user non valide : lastName vide
+     * 
      * @test 
      */ 
-    public function isLastNameUserValid() {
+    public function testLastNameUserEmpty() {
+        $this->user->setFirstName("Ludo");
         $this->user->setLastName("");
-        $this->assertTrue($this->user->isValid());
+        $this->expectException(Exception::class);
+        $this->user->isValid();   
     }
 
     /** 
+     * Test la méthode isValid() pour un cas de user non valide : email invalide
+     * 
      * @test 
      */ 
-    public function isEmailUserValid() {
+    public function testEmailUserNotValid() {
+        $this->user->setLastName("Collignon");
         $this->user->setEmail("td.com123");
+        $this->expectException(Exception::class);
+        $this->user->isValid();   
+    }
+
+    /** 
+     * Test la méthode isValid() pour un cas de user non valide : password invalide
+     * 
+     * @test 
+     */ 
+    public function testPasswordUserNotValid() {
+        $this->user->setEmail("lud.collignon@gmail.com");
+        $this->user->setPassword("pwd");        
+        $this->expectException(Exception::class);
+        $this->user->isValid();
+    }
+
+    /** 
+     * Test la méthode isValid() pour un cas de user valide : password valide
+     * 
+     * @test 
+     */ 
+    public function testPasswordUserValid() {
+        $this->user->setPassword("sjhqfkheioufgiushdfs3d4f53s54d");
         $this->assertTrue($this->user->isValid());
     }
 
     /** 
+     * Test la méthode isValid() pour un cas de user non valide : âge < 13 ans
+     * 
      * @test 
      */ 
-    public function isPasswordUserValid() {
-        $this->user->setPassword("pwd");
-        $this->assertTrue($this->user->isValid());
+    public function testBirthdayNotValid() {
+        $this->user->setBirthday(Carbon::now()->subYear(8));
+        $this->expectException(Exception::class);
+        $this->user->isValid();
     }
 
     /** 
+     * Test la méthode isValid() pour un cas de user valide : âge > 13 ans
+     * 
      * @test 
      */ 
-    public function isBirthdayUserValid() {
-        $this->user->setBirthday(Carbon::now());
+    public function testBirthdayValid() {
+        $this->user->setBirthday(Carbon::now()->subYear(17));
         $this->assertTrue($this->user->isValid());
+
     }
 }

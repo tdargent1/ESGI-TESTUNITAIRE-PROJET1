@@ -160,10 +160,10 @@ class User implements UserInterface
         if (! filter_var($this->email, FILTER_VALIDATE_EMAIL))
             throw new Exception("Email vide.");
 
-        if ($this->birthday->addYears(13)->isBefore(Carbon::now()))
+        if ($this->birthday->addYears(13)->isAfter(Carbon::now()))
             throw new Exception("L'utilisateur doit avoir au moins 13 ans.");
- 
-        if (strlen($this->password) < 8 && strlen($this->password) > 40)
+
+        if (strlen($this->password) < 8 || strlen($this->password) > 40)
             throw new Exception("Le mot de passe doit comprendre entre 8 et 40 catactères.");
 
         return true;
