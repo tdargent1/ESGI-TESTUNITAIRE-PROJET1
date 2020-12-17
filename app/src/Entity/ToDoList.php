@@ -26,6 +26,11 @@ class ToDoList
     private $name;
 
     /**
+     * @ORM\Column(type="text")
+     */
+    private $description;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
@@ -53,6 +58,18 @@ class ToDoList
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
@@ -97,5 +114,16 @@ class ToDoList
         }
 
         return $this;
+    }
+
+    public function isValid() 
+    {
+        if (empty($this->name))
+            throw new Exception("Nom vide.");
+
+        if (empty($this->description))
+            throw new Exception("Description vide.");
+    
+        return true;
     }
 }

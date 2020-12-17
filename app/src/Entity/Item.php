@@ -90,4 +90,22 @@ class Item
 
         return $this;
     }
+
+    public function isValid() 
+    {
+        if (empty($this->name))
+            throw new Exception("Nom vide.");
+
+        $items = (new ItemRepository())->findBy(['name' => $this->name]);
+        if (! empty($items))
+            throw new Exception("Nom déjà utilisé.");
+
+        if (empty($this->content))
+        throw new Exception("Content vide.");
+
+        if (strlen($this->content) > 1000)
+            throw new Exception("Content trop long (maximum 1000 caractères).");
+    
+        return true;
+    }
 }
