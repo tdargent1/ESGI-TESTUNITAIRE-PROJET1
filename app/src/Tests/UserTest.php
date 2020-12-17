@@ -4,12 +4,21 @@ use Carbon\Carbon;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
-use function PHPUnit\Framework\assertTrue;
-
 class UserTest extends TestCase
 {
-    
-    private $user;
+    protected User $user;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->initUser(
+            'Ludovic', 
+            'Collignon', 
+            'lud@gmail.com', 
+            'password123', 
+            Carbon::createFromFormat('Y-m-d', '1998-06-21')
+        );
+    }
 
     public function initUser($firstName, $lastName, $email, $password, $birthday) {
         $this->user->setFirstName($firstName);
@@ -20,10 +29,31 @@ class UserTest extends TestCase
     }
 
     public function isUserValid() {
-
-        $this->initUser('Ludovic', 'Collignon', 'lud@gmail.com', 'azeazeazpeoapoziepoaizpe', Carbon::createFromFormat('Y-m-d', '1998-06-21'));
-        assertTrue($this->user->isValid());
-
+        $this->assertTrue($this->user->isValid());
     }
 
+    public function isFirstNameUserValid() {
+        $this->user->setFirstName("");
+        $this->assertTrue($this->user->isValid());
+    }
+
+    public function isLastNameUserValid() {
+        $this->user->setLastName("");
+        $this->assertTrue($this->user->isValid());
+    }
+
+    public function isEmailUserValid() {
+        $this->user->setEmail("td.com123");
+        $this->assertTrue($this->user->isValid());
+    }
+
+    public function isPasswordUserValid() {
+        $this->user->setPassword("pwd");
+        $this->assertTrue($this->user->isValid());
+    }
+
+    public function isBirthdayUserValid() {
+        $this->user->setBirthday(Carbon::now());
+        $this->assertTrue($this->user->isValid());
+    }
 }
