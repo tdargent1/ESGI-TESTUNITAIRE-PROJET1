@@ -97,6 +97,7 @@ class Item
             throw new Exception("Nom vide.");
 
         $items = (new ItemRepository())->findBy(['name' => $this->name]);
+
         if (! empty($items))
             throw new Exception("Nom déjà utilisé.");
 
