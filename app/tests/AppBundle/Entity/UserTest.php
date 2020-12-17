@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\AppBundle\Entity;
+
 use Carbon\Carbon;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;

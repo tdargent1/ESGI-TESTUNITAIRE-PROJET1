@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace Tests\AppBundle\Entity;
 
 use App\Entity\ToDoList;
 use Carbon\Carbon;
@@ -24,14 +24,14 @@ class ToDoListTest extends TestCase
     /** 
      * @test 
      */ 
-    public function istoDoListValid() {
+    public function testIstoDoListValid() {
         $this->assertTrue($this->toDoList->isValid());
     }
 
     /** 
      * @test 
      */ 
-    public function isNametoDoListValid() {
+    public function testIsNametoDoListValid() {
         $this->toDoList->setName("");
         $this->assertTrue($this->toDoList->isValid());
     }
@@ -39,7 +39,7 @@ class ToDoListTest extends TestCase
     /** 
      * @test 
      */ 
-    public function isContenttoDoListNotNull() {
+    public function testIsContenttoDoListNotNull() {
         $this->toDoList->setDescription("");
         $this->assertTrue($this->toDoList->isValid());
     }

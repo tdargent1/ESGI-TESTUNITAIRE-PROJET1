@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace Tests\AppBundle\Entity;
 
 use App\Entity\Item;
 use Carbon\Carbon;
@@ -24,14 +24,14 @@ class ItemTest extends TestCase
     /** 
      * @test 
      */ 
-    public function isItemValid() {
+    public function testIsItemValid() {
         $this->assertTrue($this->item->isValid());
     }
 
     /** 
      * @test 
      */ 
-    public function isNameItemValid() {
+    public function testIsNameItemValid() {
         $this->item->setName("");
         $this->assertTrue($this->item->isValid());
     }
@@ -39,7 +39,7 @@ class ItemTest extends TestCase
     /** 
      * @test 
      */ 
-    public function isContentItemNotNull() {
+    public function testIsContentItemNotNull() {
         $this->item->setContent("");
         $this->assertTrue($this->item->isValid());
     }
