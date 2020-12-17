@@ -22,15 +22,6 @@ class UserFixtures extends Fixture
         ;
         $manager->persist($object);
 
-        for ($i=0; $i<20; $i++) {
-            $object = (new User())
-                ->setEmail($faker->email)
-                ->setRoles([])
-                ->setPassword(self::PWD)
-            ;
-            $manager->persist($object);
-        }
-
         $manager->flush();
     }
 }
