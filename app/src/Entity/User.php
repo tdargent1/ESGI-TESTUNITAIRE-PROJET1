@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use Exception;
+use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -34,7 +36,6 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
-
     private $firstname;
     private $lastname;
     private $birthday;
@@ -103,7 +104,6 @@ class User implements UserInterface
     {
     
     }
-
     
     public function getFirstname()
     {
@@ -152,17 +152,20 @@ class User implements UserInterface
     public function isValid() 
     {
         if (empty($this->lastname))
-            throw new Exception("Nom vide");
+            throw new Exception("Nom vide.");
 
         if (empty($this->firstname))
-            throw new Exception("Prénom vide");
+            throw new Exception("Prénom vide.");
 
         if (! filter_var($this->email, FILTER_VALIDATE_EMAIL))
-            throw new Exception("Email vide");
+            throw new Exception("Email vide.");
 
-        // if (date_diff($this->birthDay, date("Y-m-d"))->format('Y') < 13)
-        //     throw new Exception("L'âge doit être supérieur à 13 ans");
-    
+        if ($this->birthday->addYears(13)->isBefore(Carbon::now()))
+            throw new Exception("L'utilisateur doit avoir au moins 13 ans.");
+ 
+        if (strlen($this->password) < 8 && strlen($this->password) > 40)
+            throw new Exception("Le mot de passe doit comprendre entre 8 et 40 catactères.");
+
         return true;
     }
 }
