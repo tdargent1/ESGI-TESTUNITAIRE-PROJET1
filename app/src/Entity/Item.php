@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\ToDoList;
 
 /**
  * @ORM\Entity(repositoryClass=ItemRepository::class)
@@ -31,6 +32,11 @@ class Item
      * @ORM\Column(type="datetime")
      */
     private $createdDate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ToDoList::class, inversedBy="items")
+     */
+    private $toDoList;
 
     public function getId(): ?int
     {
@@ -69,6 +75,18 @@ class Item
     public function setCreatedDate(\DateTimeInterface $createdDate): self
     {
         $this->createdDate = $createdDate;
+
+        return $this;
+    }
+
+    public function getToDoList(): ?ToDoList
+    {
+        return $this->toDoList;
+    }
+
+    public function setToDoList(?ToDoList $toDoList): self
+    {
+        $this->toDoList = $toDoList;
 
         return $this;
     }
