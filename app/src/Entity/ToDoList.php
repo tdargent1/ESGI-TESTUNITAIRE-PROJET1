@@ -33,7 +33,7 @@ class ToDoList
     /**
      * @ORM\Column(type="datetime")
      */
-    private $updatedAt;
+    private $lastAddedTime;
 
     /**
      * @ORM\OneToMany(targetEntity=Item::class, mappedBy="toDoList")
@@ -74,14 +74,14 @@ class ToDoList
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getLastAddedTime(): ?\DateTimeInterface
     {
-        return $this->updatedAt;
+        return $this->lastAddedTime;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setLastAddedTime(\DateTimeInterface $updatedAt): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->lastAddedTime = $lastAddedTime;
 
         return $this;
     }
