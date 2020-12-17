@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\Item;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 
@@ -13,6 +14,7 @@ class ItemTest extends TestCase
     {
         parent::setUp();
         
+        $this->item = new Item();
         $this->item->setName("Important");
         $this->item->setContent("Thibault et Ludovic sont sur un bateau, Ludovic tombe à l'eau.");
         $this->item->setCreatedDate(Carbon::now());

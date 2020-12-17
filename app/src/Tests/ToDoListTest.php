@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\ToDoList;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 
@@ -13,6 +14,7 @@ class ToDoListTest extends TestCase
     {
         parent::setUp();
         
+        $this->toDoList = new ToDoList();
         $this->toDoList->setName("La numéro uno");
         $this->toDoList->setDescription("Ma première TODOLIST");
         $this->toDoList->setCreatedDate(Carbon::now());
