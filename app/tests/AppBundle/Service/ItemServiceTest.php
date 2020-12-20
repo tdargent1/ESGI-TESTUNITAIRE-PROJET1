@@ -20,18 +20,18 @@ class ItemServiceTest extends TestCase
     private $itemService;
     private $itemRepository;
     private $todoList;
-
+    
     public function setUp(): void
     {
         parent::setUp();
-
+        
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $this->itemRepository = $this->createMock(ItemRepository::class);
-
+        
         $entityManager->expects($this->any())
             ->method('getRepository')
             ->willReturn($this->itemRepository);
-
+        
         $this->itemService = new ItemService($entityManager, new UserService($entityManager));
 
         $this->user = new User();
@@ -77,7 +77,7 @@ class ItemServiceTest extends TestCase
         $this->itemRepository->expects($this->any())
             ->method('findOneByNameAndUser')
             ->willReturn(null);
-
+        
         $this->assertTrue($this->itemService->checkIfItemNotExistByName($this->item));
     }
 

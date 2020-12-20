@@ -3,10 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Item;
+use App\Entity\User;
 use App\Entity\ToDoList;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Item|null find($id, $lockMode = null, $lockVersion = null)

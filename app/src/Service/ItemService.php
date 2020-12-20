@@ -18,16 +18,19 @@ class ItemService
     }
     
     /**
-     * Vérifie si un item du même existe en DB
+     * Return true si le nom n'existe pas déjà
      * 
      * @param Item $name
      */
-    public function checkIfExistByName(Item $item)
+    public function checkIfItemNotExistByName(Item $item)
     {
         $itemRepository = $this->em->getRepository(Item::class);
-        $user = $this->userService->getUserByToDoList($item->getToDoList());
+        
+        $todoList = $item->getToDoList();
 
-        if (!empty($itemRepository->findOneByNameAndUser($item->getName(), $user)))
-            throw new Exception("Un item du même nom existe déjà");
+        if ($todoList == null)
+            throw new Exception('L\'item n\'est lié à aucune TodoList.');
+        
+        return empty($itemRepository->findOneByNameAndUser($item->getName(), $todoList->getOwner()));
     }
 }
