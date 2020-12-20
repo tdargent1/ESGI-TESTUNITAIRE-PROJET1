@@ -122,14 +122,6 @@ class ToDoList
         return $this;
     }
 
-    /**
-     * @return User
-     */
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
     public function isValid() 
     {
         if (empty($this->name))
