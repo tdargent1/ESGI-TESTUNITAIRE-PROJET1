@@ -19,6 +19,26 @@ class ToDoListService
         $this->em = $em;
     }
 
+    public function createToDoList(User $user, String $name, String $description): ToDoList
+    {
+        $isValid = $user->isValid();
+
+        if (!empty($isValid))
+            throw new Exception(implode("\n", $isValid));
+
+        if (!empty($this->getToDoListByUserId($user)))
+            throw new Exception("Impossible de créer une TodoList. L'utilisateur a déjà une TodoList");
+
+        $toDoList = new ToDoList($user);
+        $toDoList->setName($name);
+        $toDoList->setDescription($description);
+
+        $this->em->persist($toDoList);
+        $this->em->flush();
+
+        return $toDoList;
+    }
+
     /**
      * Retourne la ToDList du User
      * 

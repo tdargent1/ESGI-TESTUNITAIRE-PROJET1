@@ -151,21 +151,23 @@ class User implements UserInterface
 
     public function isValid() 
     {
+        $exceptions = [];
+
         if (empty($this->lastname))
-            throw new Exception("Nom vide.");
+            array_push($exceptions, "Nom vide.");
 
         if (empty($this->firstname))
-            throw new Exception("Prénom vide.");
+            array_push($exceptions, "Prénom vide.");
 
         if (! filter_var($this->email, FILTER_VALIDATE_EMAIL))
-            throw new Exception("Email vide.");
+            array_push($exceptions, "Email vide.");
 
         if ($this->birthday->addYears(13)->isAfter(Carbon::now()))
-            throw new Exception("L'utilisateur doit avoir au moins 13 ans.");
+            array_push($exceptions, "L'utilisateur doit avoir au moins 13 ans.");
 
         if (strlen($this->password) < 8 || strlen($this->password) > 40)
-            throw new Exception("Le mot de passe doit comprendre entre 8 et 40 catactères.");
+            array_push($exceptions, "Le mot de passe doit comprendre entre 8 et 40 catactères.");
 
-        return true;
+        return $exceptions;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Exception;
 use App\Entity\Item;
+use App\Service\MailService;
 use App\Service\ToDoListService;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ToDoListRepository;
@@ -42,9 +43,16 @@ class ToDoList
      */
     private $items;
 
-    public function __construct()
+    /**
+     * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $owner;
+
+    public function __construct(User $owner)
     {
         $this->items = new ArrayCollection();
+        $this->owner = $owner;
     }
 
     public function getId(): ?int
@@ -96,14 +104,13 @@ class ToDoList
         return $this->items;
     }
 
-    public function addItem(ToDoListService  $todoService, Item $item): self
+    public function addItem(ToDoListService  $todoService, MailService $mailService, Item $item): self
     {
         $todoService->checkTimeBetweenAdding($this->self, $item);
 
         if($todoService->checkEnvoieMail($this->user)) {
-            $mailService = new MailService();
             $mailService->envoieMail(
-                $user->getEmail(), 
+                $this->user->getEmail(), 
                 "ToDoList - Alerte", 
                 "Vous venez d'ajouter un huitième élément à votre ToDoLis"
             );
@@ -129,6 +136,14 @@ class ToDoList
         return $this;
     }
 
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
     public function isValid() 
     {
         if (empty($this->name))
@@ -138,5 +153,17 @@ class ToDoList
             throw new Exception("Description vide.");
     
         return true;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(User $owner): self
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 }

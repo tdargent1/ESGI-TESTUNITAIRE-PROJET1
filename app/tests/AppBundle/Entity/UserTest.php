@@ -28,7 +28,7 @@ class UserTest extends TestCase
      * @test 
      */ 
     public function testUserValid() {
-        $this->assertTrue($this->user->isValid());
+        $this->assertEmpty($this->user->isValid());
     }
 
     /** 
@@ -38,8 +38,7 @@ class UserTest extends TestCase
      */ 
     public function testFirstNameUserEmpty() {
         $this->user->setFirstName("");
-        $this->expectException(Exception::class);
-        $this->user->isValid();   
+        $this->assertNotEmpty($this->user->isValid());
     }
 
     /** 
@@ -50,8 +49,7 @@ class UserTest extends TestCase
     public function testLastNameUserEmpty() {
         $this->user->setFirstName("Ludo");
         $this->user->setLastName("");
-        $this->expectException(Exception::class);
-        $this->user->isValid();   
+        $this->assertNotEmpty($this->user->isValid());
     }
 
     /** 
@@ -62,8 +60,7 @@ class UserTest extends TestCase
     public function testEmailUserNotValid() {
         $this->user->setLastName("Collignon");
         $this->user->setEmail("td.com123");
-        $this->expectException(Exception::class);
-        $this->user->isValid();   
+        $this->assertNotEmpty($this->user->isValid());
     }
 
     /** 
@@ -74,8 +71,7 @@ class UserTest extends TestCase
     public function testPasswordUserNotValid() {
         $this->user->setEmail("lud.collignon@gmail.com");
         $this->user->setPassword("pwd");        
-        $this->expectException(Exception::class);
-        $this->user->isValid();
+        $this->assertNotEmpty($this->user->isValid());
     }
 
     /** 
@@ -85,7 +81,7 @@ class UserTest extends TestCase
      */ 
     public function testPasswordUserValid() {
         $this->user->setPassword("sjhqfkheioufgiushdfs3d4f53s54d");
-        $this->assertTrue($this->user->isValid());
+        $this->assertEmpty($this->user->isValid());
     }
 
     /** 
@@ -95,8 +91,7 @@ class UserTest extends TestCase
      */ 
     public function testBirthdayNotValid() {
         $this->user->setBirthday(Carbon::now()->subYear(8));
-        $this->expectException(Exception::class);
-        $this->user->isValid();
+        $this->assertNotEmpty($this->user->isValid());
     }
 
     /** 
@@ -106,7 +101,7 @@ class UserTest extends TestCase
      */ 
     public function testBirthdayValid() {
         $this->user->setBirthday(Carbon::now()->subYear(17));
-        $this->assertTrue($this->user->isValid());
+        $this->assertEmpty($this->user->isValid());
 
     }
 }
