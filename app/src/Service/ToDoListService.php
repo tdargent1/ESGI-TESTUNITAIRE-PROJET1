@@ -38,8 +38,6 @@ class ToDoListService
      * 
      * @param ToDoList $toDoList
      * @param Item $item
-     * 
-     * @return bool
      */
     public function checkTimeBetweenAdding(ToDoList $toDoList, Item $item): bool
     {
@@ -47,8 +45,6 @@ class ToDoListService
         
         if($lastAddedTime->isAfter(Carbon::now()))
             throw new Exception("Vous devez attendre 30 minutes avant d'ajouter un nouvel élément");
-
-        return true;
     }
 
     /**
@@ -59,13 +55,10 @@ class ToDoListService
     public function checkEnvoieMail(User $user) {
         $toDoList = $this->getToDoListByUserId($user);
 
-        if(count($toDoList->getItems()->toArray()) == 8) {
-            $mailService = new MailService();
-            $mailService->envoieMail(
-                $user->getEmail(), 
-                "ToDoList - Alerte", 
-                "Vous venez d'ajouter un huitième élément à votre ToDoLis"
-            );
+        if(count($toDoList->getItems()) == 8) {
+            return true;
         }
+
+        return false;
     }
 }

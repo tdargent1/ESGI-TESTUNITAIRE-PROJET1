@@ -98,11 +98,21 @@ class ToDoList
 
     public function addItem(ToDoListService  $todoService, Item $item): self
     {
-        $todoList = $todoService->getToDoListByUserId($this->user);
-
         $todoService->checkTimeBetweenAdding($this->self, $item);
 
-        $this->items = $item;
+        if($todoService->checkEnvoieMail($this->user)) {
+            $mailService = new MailService();
+            $mailService->envoieMail(
+                $user->getEmail(), 
+                "ToDoList - Alerte", 
+                "Vous venez d'ajouter un huitième élément à votre ToDoLis"
+            );
+        }
+
+        if (! $this->items->contains($item)) {
+            $this->items[] = $item;
+            $item->setToDoList($this);
+        }
             
         return $this;
     }
