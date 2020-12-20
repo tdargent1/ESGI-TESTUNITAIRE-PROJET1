@@ -75,3 +75,8 @@ docker-compose exec php bin/console make:auth
 ```
 docker-compose exec php bin/console security:encode-password 
 ```
+
+##### Lancer les tests unitaire
+```
+docker exec -ti <id container>  ./vendor/bin/simple-phpunit tests/appbundle/entity/file.php
+```
