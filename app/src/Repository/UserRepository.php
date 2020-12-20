@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\ToDoList;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -36,6 +37,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
+    public function findByToDoList(ToDoList $toDoList)
+    {
+        return $this->createQueryBuilder('user')
+            ->innerJoin(ToDoList::class, 'todoList')
+            ->andWhere('todoList.owner_id = :ownerId')
+            ->setParameter('ownerId', $toDoList->getOwner()->getId())
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    
     // /**
     //  * @return User[] Returns an array of User objects
     //  */

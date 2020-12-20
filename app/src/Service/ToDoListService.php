@@ -29,14 +29,29 @@ class ToDoListService
         if (!empty($this->getToDoListByUserId($user)))
             throw new Exception("Impossible de créer une TodoList. L'utilisateur a déjà une TodoList");
 
-        $toDoList = new ToDoList($user);
-        $toDoList->setName($name);
-        $toDoList->setDescription($description);
+        return $this->em->getRepository(ToDoList::class)->createToDoList($user, $name, $description); 
+    }
 
-        $this->em->persist($toDoList);
-        $this->em->flush();
+    public function updateToDoList(ToDoList $todoList, Item $item, ItemService $itemService, MailService $mailService)
+    {
+        $this->checkTimeBetweenAdding($todoList);
+        $this->checkIsToDoListFull($todoList);
+        $item->isValid($itemService);
 
-        return $toDoList;
+        if (!$todoList->items->contains($item)) {
+            $todoList->items[] = $item;
+            $item->setToDoList($todoList);
+        }
+
+        $this->em->getRepository(ToDoList::class)->updateToDoList($todoList);
+
+        if ($this->checkEnvoieMail($todoList)) {
+            $mailService->envoieMail(
+                $this->user->getEmail(),
+                "ToDoList - Alerte",
+                "Vous venez d'ajouter un huitième élément à votre ToDoLis"
+            );
+        }
     }
 
     /**
@@ -50,16 +65,15 @@ class ToDoListService
     {
         $toDoListRepository = $this->em->getRepository(ToDoList::class);
 
-        return $toDoListRepository->findOneByUserId($user->getId());;
+        return $toDoListRepository->findOneByUserId($user->getId());
     }
 
     /**
      * Check si le dernier ajout date d'au moins 30 minutes
      * 
      * @param ToDoList $toDoList
-     * @param Item $item
      */
-    public function checkTimeBetweenAdding(ToDoList $toDoList, Item $item): bool
+    public function checkTimeBetweenAdding(ToDoList $toDoList)
     {
         $lastAddedTime = Carbon::createFromTimestamp($toDoList->getLastAddedTime())->addMinutes(30);
         
@@ -70,15 +84,21 @@ class ToDoListService
     /**
      * Vérifie si il y a 8 items dans la ToDoList pour l'envoi du mail
      * 
-     * @param User $user
+     * @param ToDoList $todoList
      */
-    public function checkEnvoieMail(User $user) {
-        $toDoList = $this->getToDoListByUserId($user);
+    public function checkEnvoieMail(ToDoList $toDoList)
+    {
+        return count($toDoList->getItems()) == 8;
+    }
 
-        if(count($toDoList->getItems()) == 8) {
-            return true;
-        }
-
-        return false;
+    /**
+     * Check la taille de la todolist (max 10)
+     * 
+     * @param ToDoList $todoList
+     */
+    public function checkIsToDoListFull(ToDoList $toDoList)
+    {
+        if (count($toDoList->getItems()) == 10)
+            throw new Exception("La ToDoList peut contenir au maximum 10 items.");
     }
 }

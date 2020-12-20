@@ -7,9 +7,9 @@ use App\Entity\Item;
 use App\Service\MailService;
 use App\Service\ToDoListService;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\ToDoListRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use App\Service\ItemService;
 
 /**
  * @ORM\Entity(repositoryClass=ToDoListRepository::class)
@@ -104,23 +104,9 @@ class ToDoList
         return $this->items;
     }
 
-    public function addItem(ToDoListService  $todoService, MailService $mailService, Item $item): self
+    public function addItem(ItemService $itemService, ToDoListService $todoService, MailService $mailService, Item $item): self
     {
-        $todoService->checkTimeBetweenAdding($this->self, $item);
-
-        if($todoService->checkEnvoieMail($this->user)) {
-            $mailService->envoieMail(
-                $this->user->getEmail(), 
-                "ToDoList - Alerte", 
-                "Vous venez d'ajouter un huitième élément à votre ToDoLis"
-            );
-        }
-
-        if (! $this->items->contains($item)) {
-            $this->items[] = $item;
-            $item->setToDoList($this);
-        }
-            
+        $todoService->updateToDoList($this->self, $item, $itemService, $mailService);
         return $this;
     }
 

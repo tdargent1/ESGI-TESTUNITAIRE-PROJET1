@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\ToDoList;
+use App\Service\ItemService;
 
 /**
  * @ORM\Entity(repositoryClass=ItemRepository::class)
@@ -31,7 +32,7 @@ class Item
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdDate;
+    private $createdAt;
 
     /**
      * @ORM\ManyToOne(targetEntity=ToDoList::class, inversedBy="items")
@@ -67,14 +68,14 @@ class Item
         return $this;
     }
 
-    public function getCreatedDate(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->createdDate;
+        return $this->createdAt;
     }
 
-    public function setCreatedDate(\DateTimeInterface $createdDate): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
-        $this->createdDate = $createdDate;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -91,22 +92,22 @@ class Item
         return $this;
     }
 
-    public function isValid() 
+    public function isValid(ItemService $itemService) 
     {
+        $exceptions = [];
+
         if (empty($this->name))
-            throw new Exception("Nom vide.");
+            array_push($exceptions, "Nom vide.");
 
-        $items = (new ItemRepository())->findBy(['name' => $this->name]);
-
-        if (! empty($items))
-            throw new Exception("Nom déjà utilisé.");
+        if ($itemService->checkIfExistByName($this->self))           
+            array_push($exceptions, "Nom déjà utilisé.");
 
         if (empty($this->content))
-        throw new Exception("Content vide.");
+            array_push($exceptions, "Content vide.");
 
         if (strlen($this->content) > 1000)
-            throw new Exception("Content trop long (maximum 1000 caractères).");
+            array_push($exceptions, "Content trop long (maximum 1000 caractères).");
     
-        return true;
+        return $exceptions;
     }
 }

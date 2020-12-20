@@ -36,8 +36,20 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $firstname;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $lastname;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
     private $birthday;
 
     public function getId(): ?int
@@ -104,28 +116,6 @@ class User implements UserInterface
     {
     
     }
-    
-    public function getFirstname()
-    {
-        return $this->firstname;
-    }
-    public function setFirstname($firstname)
-    {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
- 
-    public function getLastname()
-    {
-        return $this->lastname;
-    }
-    public function setLastname($lastname)
-    {
-        $this->lastname = $lastname;
-
-        return $this;
-    }
 
     public function getEmail(): ?string
     {
@@ -134,17 +124,6 @@ class User implements UserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getBirthday()
-    {
-        return $this->birthday;
-    }
-    public function setBirthday($birthday)
-    {
-        $this->birthday = $birthday;
 
         return $this;
     }
@@ -169,5 +148,41 @@ class User implements UserInterface
             array_push($exceptions, "Le mot de passe doit comprendre entre 8 et 40 catactères.");
 
         return $exceptions;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(string $firstname): self
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): self
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function getBirthday(): ?\DateTimeInterface
+    {
+        return $this->birthday;
+    }
+
+    public function setBirthday(\DateTimeInterface $birthday): self
+    {
+        $this->birthday = $birthday;
+
+        return $this;
     }
 }

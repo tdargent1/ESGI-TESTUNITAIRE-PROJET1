@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\ToDoList;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Service\ToDoListService;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method ToDoList|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,7 +21,25 @@ class ToDoListRepository extends ServiceEntityRepository
         parent::__construct($registry, ToDoList::class);
     }
 
+    public function updateToDoList(ToDoList $toDoList): ToDoList
+    {
+        // $this->_em->persist($toDoList);
+        $this->_em->flush();
 
+        return $toDoList;
+    }
+
+    public function createToDoList(User $user, String $name, String $description): ToDoList
+    {
+        $toDoList = new ToDoList($user);
+        $toDoList->setName($name);
+        $toDoList->setDescription($description);
+
+        $this->_em->persist($toDoList);
+        $this->_em->flush();
+
+        return $toDoList;
+    }
 
     /**
      * @return ToDoList[] Returns an array with the user's todoList

@@ -4,8 +4,8 @@ namespace App\Service;
 
 class MailService
 {
-    public function envoieMail($mail, $subject, $body) 
+    public function envoieMail($mail, $subject, $body): bool
     {
-        
+        return true;
     }
 }
