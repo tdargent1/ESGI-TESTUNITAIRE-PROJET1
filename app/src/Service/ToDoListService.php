@@ -24,7 +24,7 @@ class ToDoListService
         $isValid = $user->isValid();
 
         if (!empty($isValid))
-            throw new Exception(implode("\n", $isValid));
+            throw new Exception(implode('\n', $isValid));
 
         if (!empty($this->getToDoListByUserId($user)))
             throw new Exception("Impossible de créer une TodoList. L'utilisateur a déjà une TodoList");
@@ -61,7 +61,7 @@ class ToDoListService
      * 
      * @return TodDoList
      */
-    public function getToDoListByUserId(User $user) :ToDoList
+    public function getToDoListByUserId(User $user): ?ToDoList
     {
         $toDoListRepository = $this->em->getRepository(ToDoList::class);
 

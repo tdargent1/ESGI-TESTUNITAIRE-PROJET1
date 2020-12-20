@@ -41,10 +41,7 @@ class ToDoListRepository extends ServiceEntityRepository
         return $toDoList;
     }
 
-    /**
-     * @return ToDoList[] Returns an array with the user's todoList
-     */
-    public function findOneByUserId($userId)
+    public function findOneByUserId($userId): ?ToDoList
     {
         return $this->createQueryBuilder('q')
             ->andWhere('q.owner = :userId')
