@@ -14,11 +14,9 @@ class ToDoListTest extends TestCase
     {
         parent::setUp();
         
-        $this->toDoList = new ToDoList();
-        $this->toDoList->setName("La numéro uno");
-        $this->toDoList->setDescription("Ma première TODOLIST");
-        $this->toDoList->setCreatedDate(Carbon::now());
-        $this->toDoList->setToDoList();
+        // $this->toDoList = new ToDoList($user);
+        // $this->toDoList->setName("La numéro uno");
+        // $this->toDoList->setDescription("Ma première TODOLIST");
     }
 
     /** 

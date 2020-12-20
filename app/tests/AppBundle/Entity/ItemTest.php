@@ -18,7 +18,7 @@ class ItemTest extends TestCase
         $this->item = new Item();
         $this->item->setName("Important");
         $this->item->setContent("Thibault et Ludovic sont sur un bateau, Ludovic tombe à l'eau.");
-        $this->item->setCreatedDate(Carbon::now());
+        $this->item->setCreatedAt(Carbon::now());
         $this->item->setToDoList((new ToDoList())
             ->setName("Thibault")
             ->setDescription("Mon contenu")
