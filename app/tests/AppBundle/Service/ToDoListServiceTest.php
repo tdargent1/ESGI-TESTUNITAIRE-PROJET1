@@ -2,6 +2,7 @@
 
 namespace Tests\AppBundle\Service;
 
+use Exception;
 use Carbon\Carbon;
 use App\Entity\User;
 use App\Entity\ToDoList;
@@ -61,9 +62,57 @@ class ToDoListServiceTest extends TestCase
         $toDoList->setName("nom");
         $toDoList->setDescription("description");
 
-        $this->assertEquals(
-            $toDoList, 
+        $this->assertInstanceOf(
+            ToDoList::class, 
             $this->toDoListService->createToDoList($this->user, "Ma première ToDoList", "Une superbe ToDoList")
         );
+    }
+
+    /** 
+     * test la création d'une ToDoList avec un user non valide
+     * 
+     * @test 
+     */
+    public function testCreateToDoListUserNotValid()
+    {
+        $this->user->expects($this->any())
+            ->method('isValid')
+            ->willReturn(['error']);
+
+        $this->toDoListRepository->expects($this->any())
+        ->method('findOneByUserId')
+        ->willReturn(null);
+
+        $toDoList = new ToDoList($this->user);
+        $toDoList->setName("nom");
+        $toDoList->setDescription("description");
+
+        $this->expectException(Exception::class);
+        $this->toDoListService->createToDoList($this->user, "Ma première ToDoList", "Une superbe ToDoList");
+    }
+
+
+
+    /** 
+     * test si la ToDoList existe déjà
+     * 
+     * @test 
+     */
+    public function testToDoListAlreadyExist()
+    {
+        $this->user->expects($this->any())
+            ->method('isValid')
+            ->willReturn([]);
+
+        $toDoList = new ToDoList($this->user);
+        $toDoList->setName("Ma première ToDoList");
+        $toDoList->setDescription("Une superbe ToDoList");
+
+        $this->toDoListRepository->expects($this->any())
+        ->method('findOneByUserId')
+        ->willReturn($toDoList);
+
+        $this->expectException(Exception::class);
+        $this->toDoListService->createToDoList($this->user, "Ma première ToDoList", "Une superbe ToDoList");
     }
 }
