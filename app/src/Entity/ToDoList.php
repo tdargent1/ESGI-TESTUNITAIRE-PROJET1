@@ -106,19 +106,13 @@ class ToDoList
 
     public function addItem(ItemService $itemService, ToDoListService $todoService, MailService $mailService, Item $item): self
     {
-        $todoService->updateToDoList($this->self, $item, $itemService, $mailService);
+        $todoService->addItem($this->self, $item, $itemService, $mailService);
         return $this;
     }
 
-    public function removeItem(Item $item): self
+    public function removeItem(ToDoListService $todoService, Item $item): self
     {
-        if ($this->items->removeElement($item)) {
-            // set the owning side to null (unless already changed)
-            if ($item->getToDoList() === $this) {
-                $item->setToDoList(null);
-            }
-        }
-
+        $todoService->removeItem($this->self, $item);
         return $this;
     }
 

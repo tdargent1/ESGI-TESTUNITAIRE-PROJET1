@@ -32,7 +32,7 @@ class ToDoListService
         return $this->em->getRepository(ToDoList::class)->createToDoList($user, $name, $description); 
     }
 
-    public function updateToDoList(ToDoList $todoList, Item $item, ItemService $itemService, MailService $mailService)
+    public function addItem(ToDoList $todoList, Item $item, ItemService $itemService, MailService $mailService)
     {
         $this->checkTimeBetweenAdding($todoList);
         $this->checkIsToDoListFull($todoList);
@@ -51,6 +51,16 @@ class ToDoListService
                 "ToDoList - Alerte",
                 "Vous venez d'ajouter un huitième élément à votre ToDoLis"
             );
+        }
+    }
+
+    public function removeItem(ToDoList $todoList, Item $item)
+    {
+        if ($this->items->removeElement($item)) {
+            if ($item->getToDoList() === $this) {
+                $item->setToDoList(null);
+                $this->em->getRepository(ToDoList::class)->updateToDoList($todoList);
+            }
         }
     }
 
