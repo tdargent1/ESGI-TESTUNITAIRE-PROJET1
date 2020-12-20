@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Entity\Item;
 use App\Entity\User;
 use App\Entity\ToDoList;
+use App\Service\MailService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ToDoListService
@@ -50,7 +51,21 @@ class ToDoListService
         return true;
     }
 
-    public function checkEnvoieMail() {
+    /**
+     * Vérifie si il y a 8 items dans la ToDoList pour l'envoi du mail
+     * 
+     * @param User $user
+     */
+    public function checkEnvoieMail(User $user) {
+        $toDoList = $this->getToDoListByUserId($user);
 
+        if(count($toDoList->getItems()->toArray()) == 8) {
+            $mailService = new MailService();
+            $mailService->envoieMail(
+                $user->getEmail(), 
+                "ToDoList - Alerte", 
+                "Vous venez d'ajouter un huitième élément à votre ToDoLis"
+            );
+        }
     }
 }
