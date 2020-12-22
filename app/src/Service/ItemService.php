@@ -9,18 +9,16 @@ use Doctrine\ORM\EntityManagerInterface;
 class ItemService
 {
     private $em;
-    private $userService;
 
-    public function __construct(EntityManagerInterface $em, UserService $userService)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->userService = $userService;
     }
     
     /**
      * Return true si le nom n'existe pas déjà
      * 
-     * @param Item $name
+     * @param Item $item
      */
     public function checkIfItemNotExistByName(Item $item)
     {
@@ -32,5 +30,30 @@ class ItemService
             throw new Exception('L\'item n\'est lié à aucune TodoList.');
         
         return empty($itemRepository->findOneByNameAndUser($item->getName(), $todoList->getOwner()));
+    }
+
+
+    /**
+     * Check si l'item est valide
+     * 
+     * @param Item $item
+     */
+    public function isValid(Item $item)
+    {
+        $exceptions = [];
+
+        if (empty($item->name))
+            array_push($exceptions, "Nom vide.");
+
+        if (!$this->checkIfItemNotExistByName($item))
+            array_push($exceptions, "Nom déjà utilisé.");
+
+        if (empty($item->content))
+            array_push($exceptions, "Content vide.");
+
+        if (strlen($item->content) > 1000)
+            array_push($exceptions, "Content trop long (maximum 1000 caractères).");
+
+        return $exceptions;
     }
 }

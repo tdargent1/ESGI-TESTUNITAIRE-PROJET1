@@ -13,15 +13,22 @@ use Doctrine\ORM\EntityManagerInterface;
 class ToDoListService
 {
     private $em;
+    private $itemService;
+    private $mailService;
+    private $userService;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, ItemService $itemService,
+                                MailService $mailService, UserService $userService)
     {
         $this->em = $em;
+        $this->itemService = $itemService;
+        $this->mailService = $mailService;
+        $this->userService = $userService;
     }
 
     public function createToDoList(User $user, String $name, String $description): ToDoList
     {
-        $isValid = $user->isValid();
+        $isValid = $this->userService->isValid($user);
 
         if (!empty($isValid))
             throw new Exception(implode('\n', $isValid));
@@ -32,28 +39,35 @@ class ToDoListService
         return $this->em->getRepository(ToDoList::class)->createToDoList($user, $name, $description); 
     }
 
-    public function addItem(ToDoList $todoList, Item $item, ItemService $itemService, MailService $mailService)
+    public function addItem(ToDoList $todoList, Item $item)
     {
         $this->checkTimeBetweenAdding($todoList);
         $this->checkIsToDoListFull($todoList);
-        $item->isValid($itemService);
+        $this->itemService->isValid($item);
 
-        if (!$todoList->items->contains($item)) {
-            $todoList->items[] = $item;
-            $item->setToDoList($todoList);
-        }
+        $todoList->getItems[] = $item;
+        $item->setToDoList($todoList);
 
         $this->em->getRepository(ToDoList::class)->updateToDoList($todoList);
 
         if ($this->checkEnvoieMail($todoList)) {
-            $mailService->envoieMail(
+            $this->mailService->envoieMail(
                 $this->user->getEmail(),
                 "ToDoList - Alerte",
                 "Vous venez d'ajouter un huitième élément à votre ToDoLis"
             );
         }
+        
+        return $todoList;
     }
 
+    /**
+     * Supprime l'item en argument de la todoList
+     * 
+     * @param ToDoList $todoList
+     * @param Item $item
+     * 
+     */
     public function removeItem(ToDoList $todoList, Item $item)
     {
         if ($this->items->removeElement($item)) {
@@ -65,7 +79,26 @@ class ToDoListService
     }
 
     /**
-     * Retourne la ToDList du User
+     * Check si la todoList est valide
+     * 
+     * @param ToDoList $todoList
+     * 
+     */
+    public function isValid(ToDoList $todoList)
+    {
+        $exceptions = [];
+
+        if (empty($todoList->name))
+            array_push($exceptions, "Nom vide.");
+
+        if (empty($todoList->description))
+            array_push($exceptions, "Description vide.");
+
+        return $exceptions;
+    }
+
+    /**
+     * Retourne la ToDoList du User
      * 
      * @param User $user
      * 

@@ -91,23 +91,4 @@ class Item
 
         return $this;
     }
-
-    public function isValid(ItemService $itemService) 
-    {
-        $exceptions = [];
-
-        if (empty($this->name))
-            array_push($exceptions, "Nom vide.");
-
-        if (! $itemService->checkIfItemNotExistByName($this->self))           
-            array_push($exceptions, "Nom déjà utilisé.");
-
-        if (empty($this->content))
-            array_push($exceptions, "Content vide.");
-
-        if (strlen($this->content) > 1000)
-            array_push($exceptions, "Content trop long (maximum 1000 caractères).");
-    
-        return $exceptions;
-    }
 }

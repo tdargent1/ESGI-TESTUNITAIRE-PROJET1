@@ -104,31 +104,6 @@ class ToDoList
         return $this->items;
     }
 
-    public function addItem(ItemService $itemService, ToDoListService $todoService, MailService $mailService, Item $item): self
-    {
-        $todoService->addItem($this->self, $item, $itemService, $mailService);
-        return $this;
-    }
-
-    public function removeItem(ToDoListService $todoService, Item $item): self
-    {
-        $todoService->removeItem($this->self, $item);
-        return $this;
-    }
-
-    public function isValid() 
-    {
-        $exceptions = [];
-
-        if (empty($this->name))
-            array_push($exceptions, "Nom vide.");
-
-        if (empty($this->description))
-            array_push($exceptions, "Description vide.");
-    
-        return $exceptions;
-    }
-
     public function getOwner(): ?User
     {
         return $this->owner;
