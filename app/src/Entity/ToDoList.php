@@ -118,13 +118,15 @@ class ToDoList
 
     public function isValid() 
     {
+        $exceptions = [];
+
         if (empty($this->name))
-            throw new Exception("Nom vide.");
+            array_push($exceptions, "Nom vide.");
 
         if (empty($this->description))
-            throw new Exception("Description vide.");
+            array_push($exceptions, "Description vide.");
     
-        return true;
+        return $exceptions;
     }
 
     public function getOwner(): ?User

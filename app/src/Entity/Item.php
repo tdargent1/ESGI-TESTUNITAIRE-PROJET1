@@ -99,7 +99,7 @@ class Item
         if (empty($this->name))
             array_push($exceptions, "Nom vide.");
 
-        if (!$itemService->checkIfItemNotExistByName($this->self))           
+        if (! $itemService->checkIfItemNotExistByName($this->self))           
             array_push($exceptions, "Nom déjà utilisé.");
 
         if (empty($this->content))

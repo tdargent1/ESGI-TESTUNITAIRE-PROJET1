@@ -2,8 +2,9 @@
 
 namespace Tests\AppBundle\Entity;
 
-use App\Entity\ToDoList;
 use Carbon\Carbon;
+use App\Entity\User;
+use App\Entity\ToDoList;
 use PHPUnit\Framework\TestCase;
 
 class ToDoListTest extends TestCase
@@ -14,31 +15,39 @@ class ToDoListTest extends TestCase
     {
         parent::setUp();
         
-        // $this->toDoList = new ToDoList($user);
-        // $this->toDoList->setName("La numéro uno");
-        // $this->toDoList->setDescription("Ma première TODOLIST");
+        $user = $this->createMock(User::class);
+        
+        $this->toDoList = new ToDoList($user);
+        $this->toDoList->setName("La numéro uno");
+        $this->toDoList->setDescription("Ma première TODOLIST");
     }
 
     /** 
+     * Vérifie que la todolist est valide
+     * 
      * @test 
      */ 
-    public function testIstoDoListValid() {
-        $this->assertTrue($this->toDoList->isValid());
+    public function testIsToDoListValid() {
+        $this->assertEmpty($this->toDoList->isValid());
     }
 
     /** 
+     * Vérifie que le nom de la ToDoList est empty
+     * 
      * @test 
      */ 
-    public function testIsNametoDoListValid() {
+    public function testNameToDoListEmpty() {
         $this->toDoList->setName("");
-        $this->assertTrue($this->toDoList->isValid());
+        $this->assertNotEmpty($this->toDoList->isValid());
     }
 
     /** 
+     * Vérifie que la description de la ToDoList est empty
+     * 
      * @test 
      */ 
-    public function testIsContenttoDoListNotNull() {
+    public function testDescriptionToDoListEmpty() {
         $this->toDoList->setDescription("");
-        $this->assertTrue($this->toDoList->isValid());
+        $this->assertNotEmpty($this->toDoList->isValid());
     }
 }
