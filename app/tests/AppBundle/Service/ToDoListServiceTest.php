@@ -47,13 +47,6 @@ class ToDoListServiceTest extends TestCase
         $entityManager->expects($this->any())
             ->method('getRepository')
             ->willReturn($this->toDoListRepository);
-
-        // $this->user = new User();
-        // $this->user->setFirstName('Thibault');
-        // $this->user->setLastName('Dargent');
-        // $this->user->setEmail('tdargent@gmail.com');
-        // $this->user->setPassword('password123');
-        // $this->user->setBirthday(Carbon::create(1999, 9, 21));
     }
 
     public function getNewTodoList()
@@ -181,5 +174,37 @@ class ToDoListServiceTest extends TestCase
         fwrite(STDERR, print_r($todoList->getItems(0), TRUE));
         fwrite(STDERR, print_r($item, TRUE));
         $this->assertTrue($todoList->getItems()->contains($item));
+    }
+
+    /** 
+     * Vérifie que la todolist est valide
+     * 
+     * @test 
+     */ 
+    public function testIsToDoListValid() {
+        $todoList = $this->getNewTodoList();
+        $this->assertEmpty($this->toDoListService->isValid($todoList));
+    }
+
+    /** 
+     * Vérifie que le nom de la ToDoList est empty
+     * 
+     * @test 
+     */ 
+    public function testNameToDoListEmpty() {
+        $todoList = $this->getNewTodoList();
+        $todoList->setName("");
+        $this->assertNotEmpty($this->toDoListService->isValid($todoList));
+    }
+
+    /** 
+     * Vérifie que la description de la ToDoList est empty
+     * 
+     * @test 
+     */ 
+    public function testDescriptionToDoListEmpty() {
+        $todoList = $this->getNewTodoList();
+        $todoList->setDescription("");
+        $this->assertNotEmpty($this->toDoListService->isValid($todoList));
     }
 }

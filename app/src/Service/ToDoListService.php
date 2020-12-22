@@ -88,10 +88,10 @@ class ToDoListService
     {
         $exceptions = [];
 
-        if (empty($todoList->name))
+        if (empty($todoList->getName()))
             array_push($exceptions, "Nom vide.");
 
-        if (empty($todoList->description))
+        if (empty($todoList->getDescription()))
             array_push($exceptions, "Description vide.");
 
         return $exceptions;

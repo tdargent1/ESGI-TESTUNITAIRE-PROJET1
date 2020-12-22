@@ -1,19 +1,24 @@
 <?php
 
-namespace Tests\AppBundle\Entity;
+namespace Tests\AppBundle\Service;
 
-use Exception;
 use Carbon\Carbon;
 use App\Entity\User;
+use App\Service\UserService;
 use PHPUnit\Framework\TestCase;
+use Doctrine\ORM\EntityManagerInterface;
 
-class UserTest extends TestCase
+class UserServiceTest extends TestCase
 {
     protected User $user;
 
     public function setUp(): void
     {
         parent::setUp();
+
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->userService = new UserService($entityManager);
+
         $this->user = new User();
         $this->user->setFirstName('Ludovic');
         $this->user->setLastName('Collignon');
@@ -28,7 +33,7 @@ class UserTest extends TestCase
      * @test 
      */ 
     public function testUserValid() {
-        $this->assertEmpty($this->user->isValid());
+        $this->assertEmpty($this->userService->isValid($this->user));
     }
 
     /** 
@@ -38,7 +43,7 @@ class UserTest extends TestCase
      */ 
     public function testFirstNameUserEmpty() {
         $this->user->setFirstName("");
-        $this->assertNotEmpty($this->user->isValid());
+        $this->assertNotEmpty($this->userService->isValid($this->user));
     }
 
     /** 
@@ -49,7 +54,7 @@ class UserTest extends TestCase
     public function testLastNameUserEmpty() {
         $this->user->setFirstName("Ludo");
         $this->user->setLastName("");
-        $this->assertNotEmpty($this->user->isValid());
+        $this->assertNotEmpty($this->userService->isValid($this->user));
     }
 
     /** 
@@ -60,7 +65,7 @@ class UserTest extends TestCase
     public function testEmailUserNotValid() {
         $this->user->setLastName("Collignon");
         $this->user->setEmail("td.com123");
-        $this->assertNotEmpty($this->user->isValid());
+        $this->assertNotEmpty($this->userService->isValid($this->user));
     }
 
     /** 
@@ -71,7 +76,7 @@ class UserTest extends TestCase
     public function testPasswordUserNotValid() {
         $this->user->setEmail("lud.collignon@gmail.com");
         $this->user->setPassword("pwd");        
-        $this->assertNotEmpty($this->user->isValid());
+        $this->assertNotEmpty($this->userService->isValid($this->user));
     }
 
     /** 
@@ -81,7 +86,7 @@ class UserTest extends TestCase
      */ 
     public function testPasswordUserValid() {
         $this->user->setPassword("sjhqfkheioufgiushdfs3d4f53s54d");
-        $this->assertEmpty($this->user->isValid());
+        $this->assertEmpty($this->userService->isValid($this->user));
     }
 
     /** 
@@ -91,7 +96,7 @@ class UserTest extends TestCase
      */ 
     public function testBirthdayNotValid() {
         $this->user->setBirthday(Carbon::now()->subYear(8));
-        $this->assertNotEmpty($this->user->isValid());
+        $this->assertNotEmpty($this->userService->isValid($this->user));
     }
 
     /** 
@@ -101,7 +106,7 @@ class UserTest extends TestCase
      */ 
     public function testBirthdayValid() {
         $this->user->setBirthday(Carbon::now()->subYear(17));
-        $this->assertEmpty($this->user->isValid());
+        $this->assertEmpty($this->userService->isValid($this->user));
 
     }
 }
