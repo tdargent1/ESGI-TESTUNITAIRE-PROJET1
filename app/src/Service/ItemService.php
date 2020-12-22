@@ -42,16 +42,16 @@ class ItemService
     {
         $exceptions = [];
 
-        if (empty($item->name))
+        if (empty($item->getName()))
             array_push($exceptions, "Nom vide.");
 
         if (!$this->checkIfItemNotExistByName($item))
             array_push($exceptions, "Nom déjà utilisé.");
 
-        if (empty($item->content))
+        if (empty($item->getContent()))
             array_push($exceptions, "Content vide.");
 
-        if (strlen($item->content) > 1000)
+        if (strlen($item->getContent()) > 1000)
             array_push($exceptions, "Content trop long (maximum 1000 caractères).");
 
         return $exceptions;
