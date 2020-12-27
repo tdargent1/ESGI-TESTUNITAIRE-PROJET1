@@ -97,4 +97,68 @@ class ItemServiceTest extends TestCase
 
         $this->assertFalse($this->itemService->checkIfItemNotExistByName($this->item));
     }
+
+    /** 
+     * Vérifie que l'item est valide
+     * 
+     * @test 
+     */ 
+    public function testIsItemValid() {
+        $this->itemRepository->expects($this->any())
+            ->method('findOneByNameAndUser')
+            ->willReturn(null);
+        
+        $this->item->setToDoList($this->todoList);
+
+        $this->assertEmpty($this->itemService->isValid($this->item));
+    }
+
+    /** 
+     * Vérifie que le nom de l'item est empty
+     * 
+     * @test 
+     */ 
+    public function testNameItemEmpty() {
+        $this->itemRepository->expects($this->any())
+            ->method('findOneByNameAndUser')
+            ->willReturn(null);
+        
+        $this->item->setToDoList($this->todoList);
+
+        $this->item->setName("");
+
+        $this->assertNotEmpty($this->itemService->isValid($this->item));
+    }
+
+    /** 
+     * Vérifie que le content de l'item est empty
+     * 
+     * @test 
+     */ 
+    public function testContentItemEmpty() {
+        $this->itemRepository->expects($this->any())
+        ->method('findOneByNameAndUser')
+        ->willReturn(null);
+    
+        $this->item->setToDoList($this->todoList);
+
+        $this->item->setContent("");
+
+        $this->assertNotEmpty($this->itemService->isValid($this->item));
+    }
+
+    /** 
+     * Vérifie que l'item existe déjà
+     * 
+     * @test 
+     */ 
+    public function testItemAlreadyExist() {
+        $this->itemRepository->expects($this->any())
+        ->method('findOneByNameAndUser')
+        ->willReturn($this->item);
+    
+        $this->item->setToDoList($this->todoList);
+
+        $this->assertNotEmpty($this->itemService->isValid($this->item));
+    }
 }
