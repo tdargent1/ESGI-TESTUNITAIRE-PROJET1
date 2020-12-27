@@ -177,9 +177,7 @@ class ToDoListServiceTest extends TestCase
         $todoList = $this->toDoListService->addItem($todoList, $item);
 
         $item->setToDoList($todoList);
-
-        fwrite(STDERR, print_r($todoList->getItems(0), TRUE));
-        fwrite(STDERR, print_r($item, TRUE));
-        $this->assertTrue($todoList->getItems()->contains($item));
+        
+        $this->assertContains($item, $todoList->getItems()->getValues());
     }
 }

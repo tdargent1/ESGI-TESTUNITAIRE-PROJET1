@@ -45,7 +45,7 @@ class ToDoListService
         $this->checkIsToDoListFull($todoList);
         $this->itemService->isValid($item);
 
-        $todoList->getItems[] = $item;
+        $todoList->getItems()->add($item);
         $item->setToDoList($todoList);
 
         $this->em->getRepository(ToDoList::class)->updateToDoList($todoList);
