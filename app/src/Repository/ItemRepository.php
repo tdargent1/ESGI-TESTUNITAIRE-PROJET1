@@ -38,17 +38,11 @@ class ItemRepository extends ServiceEntityRepository
         // ->innerJoin(ToDoList::class, 'todoList', Join::WITH, 'item.to_do_list_id = todoList.id')
     }
 
+    public function updateItem(Item $item): Item
+    {
+        // $this->_em->persist($item);
+        $this->_em->flush();
 
-
-    // public function createItem(User $user, String $name, String $description): ToDoList
-    // {
-    //     $item = new Item($user);
-    //     $toDoList->setName($name);
-    //     $toDoList->setDescription($description);
-
-    //     $this->_em->persist($toDoList);
-    //     $this->_em->flush();
-
-    //     return $toDoList;
-    // }   
+        return $item;
+    }
 }

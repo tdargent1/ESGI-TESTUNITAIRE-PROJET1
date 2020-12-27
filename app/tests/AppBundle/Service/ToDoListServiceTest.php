@@ -3,16 +3,16 @@
 namespace Tests\AppBundle\Service;
 
 use Exception;
+use Carbon\Carbon;
 use App\Entity\Item;
 use App\Entity\User;
 use App\Entity\ToDoList;
+use App\Service\ItemService;
+use App\Service\MailService;
 use App\Service\UserService;
 use PHPUnit\Framework\TestCase;
 use App\Service\ToDoListService;
 use App\Repository\ToDoListRepository;
-use App\Service\ItemService;
-use App\Service\MailService;
-use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ToDoListServiceTest extends TestCase
@@ -65,6 +65,19 @@ class ToDoListServiceTest extends TestCase
         $item->setContent("itemContent");
         
         return $item;
+    }
+
+    public function getTodoListWithItem(Int $nbItem)
+    {
+        $todoList = $this->getNewTodoList();
+
+        for ($i = 0; $i < $nbItem; $i++) {
+            $item = $this->getNewItem();
+            $item->setToDoList($todoList);
+            $todoList->getItems()->add($item);
+        }  
+     
+        return $todoList;
     }
 
 
@@ -139,10 +152,6 @@ class ToDoListServiceTest extends TestCase
 
 
     /********************  addItem()  ***********************/
-        // $this->checkTimeBetweenAdding
-        // $this->checkIsToDoListFull
-        // $item->isValid
-
 
     /** 
      * Test ajout d'un item sans erreur
@@ -173,6 +182,8 @@ class ToDoListServiceTest extends TestCase
         
         $this->assertContains($item, $todoList->getItems()->getValues());
     }
+
+    /********************  isValid()  ***********************/
 
     /** 
      * Vérifie que la todolist est valide
@@ -205,4 +216,97 @@ class ToDoListServiceTest extends TestCase
         $todoList->setDescription("");
         $this->assertNotEmpty($this->toDoListService->isValid($todoList));
     }
+
+
+    /********************  removeItem()  ***********************/
+    /** 
+     * Vérifie la suppression d'un élément dans une todoList
+     * 
+     * @test 
+     */
+    public function testRemoveElement() {
+        $todoList = $this->getTodoListWithItem(3);
+
+        $item = $todoList->getItems()->get(2);
+        $this->toDoListService->removeItem($todoList, $item);
+
+        $this->assertNotContains($item, $todoList->getItems()->getValues());
+    }
+
+    /** 
+     * Vérifie la suppression d'un élément qui n'existe dans une todoList
+     * 
+     * @test 
+     */
+    public function testRemoveNotExistingElement()
+    {
+        $todoList = $this->getTodoListWithItem(3);
+
+        $item = $this->getNewItem();
+
+        $this->assertNull($this->toDoListService->removeItem($todoList, $item));
+    }
+
+
+
+    /********************  checkTimeBetweenAdding()  ***********************/
+    /** 
+     * Test ajout d'un item avec un délai trop court entre deux ajouts
+     * 
+     * @test 
+     */
+    public function testAddItemWithDelayError()
+    {
+        $todoList = $this->getNewTodoList();
+        $todoList->setLastAddedTime(Carbon::now());
+
+        $this->itemService->expects($this->any())
+            ->method('isValid')
+            ->willReturn([]);
+
+        $this->mailService->expects($this->any())
+            ->method('envoieMail')
+            ->willReturn(true);
+
+        $this->toDoListRepository->expects($this->any())
+            ->method('updateToDoList')
+            ->willReturn($todoList);
+
+        $item = $this->getNewItem();
+        
+        $this->expectException(Exception::class);
+        // $this->assertTrue($this->toDoListService->addItem($todoList, $item));
+        $todoList = $this->toDoListService->addItem($todoList, $item);
+    }
+
+
+    /********************  checkIsToDoListFull()  ***********************/
+    /** 
+     * Test ajout d'un item à une todolist pleine
+     * 
+     * @test 
+     */
+    public function testAddItemWithTodoListFull()
+    {
+        $todoList = $this->getTodoListWithItem(10);
+        $todoList->setLastAddedTime(Carbon::now());
+
+        $this->itemService->expects($this->any())
+            ->method('isValid')
+            ->willReturn([]);
+
+        $this->mailService->expects($this->any())
+            ->method('envoieMail')
+            ->willReturn(true);
+
+        $this->toDoListRepository->expects($this->any())
+            ->method('updateToDoList')
+            ->willReturn($todoList);
+
+        $item = $this->getNewItem();
+
+        $this->expectException(Exception::class);
+        $todoList = $this->toDoListService->addItem($todoList, $item);
+    }
+
 }

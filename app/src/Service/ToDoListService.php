@@ -46,6 +46,7 @@ class ToDoListService
         $this->itemService->isValid($item);
 
         $todoList->getItems()->add($item);
+        $todoList->setLastAddedTime(Carbon::now());
         $item->setToDoList($todoList);
 
         $this->em->getRepository(ToDoList::class)->updateToDoList($todoList);
@@ -67,15 +68,19 @@ class ToDoListService
      * @param ToDoList $todoList
      * @param Item $item
      * 
+     * @return ?TodoList
      */
-    public function removeItem(ToDoList $todoList, Item $item)
+    public function removeItem(ToDoList $todoList, Item $item): ?ToDoList
     {
-        if ($this->items->removeElement($item)) {
+        if ($todoList->getItems()->removeElement($item)) {
             if ($item->getToDoList() === $this) {
                 $item->setToDoList(null);
-                $this->em->getRepository(ToDoList::class)->updateToDoList($todoList);
+                return $this->em->getRepository(ToDoList::class)->updateToDoList($todoList);
+                return $this->em->getRepository(Item::class)->updateItem($item);
             }
         }
+
+        return null;
     }
 
     /**
@@ -116,11 +121,11 @@ class ToDoListService
      * 
      * @param ToDoList $toDoList
      */
-    public function checkTimeBetweenAdding(ToDoList $toDoList)
+    public function checkTimeBetweenAdding(ToDoList $todoList)
     {
-        $lastAddedTime = Carbon::createFromTimestamp($toDoList->getLastAddedTime())->addMinutes(30);
-        
-        if($lastAddedTime->isAfter(Carbon::now()))
+        $lastAddedTimePlus30min = Carbon::instance($todoList->getLastAddedTime())->addMinutes(30);
+
+        if(Carbon::now()->isBefore($lastAddedTimePlus30min))
             throw new Exception("Vous devez attendre 30 minutes avant d'ajouter un nouvel élément");
     }
 
