@@ -38,9 +38,13 @@ class ItemRepository extends ServiceEntityRepository
 
     public function updateItem(Item $item): Item
     {
-        // $this->_em->persist($item);
         $this->_em->flush();
 
         return $item;
+    }
+
+    public function removeItem(Item $item) {
+        $this->_em->remove($item);
+        $this->_em->flush();
     }
 }

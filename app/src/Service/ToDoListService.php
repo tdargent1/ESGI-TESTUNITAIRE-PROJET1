@@ -57,7 +57,7 @@ class ToDoListService
             $this->mailService->envoieMail(
                 $this->user->getEmail(),
                 "ToDoList - Alerte",
-                "Vous venez d'ajouter un huitième élément à votre ToDoLis"
+                "Vous venez d'ajouter un huitième élément à votre ToDoList"
             );
         }
         
@@ -74,11 +74,12 @@ class ToDoListService
      */
     public function removeItem(ToDoList $todoList, Item $item): ?ToDoList
     {
-        if ($todoList->getItems()->removeElement($item)) {
-            if ($item->getToDoList() === $this) {
-                $item->setToDoList(null);
-                return $this->em->getRepository(ToDoList::class)->updateToDoList($todoList);
-                return $this->em->getRepository(Item::class)->updateItem($item);
+        if($todoList->getItems()->removeElement($item)) {
+            if($item->getToDoList() === $todoList) {
+                
+                $this->em->getRepository(Item::class)->removeItem($item);
+
+                return $todoList;
             }
         }
 
