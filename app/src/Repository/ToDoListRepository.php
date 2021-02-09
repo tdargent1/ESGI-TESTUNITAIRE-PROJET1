@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use Carbon\Carbon;
 use App\Entity\User;
 use App\Entity\ToDoList;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,6 +34,7 @@ class ToDoListRepository extends ServiceEntityRepository
         $toDoList = new ToDoList($user);
         $toDoList->setName($name);
         $toDoList->setDescription($description);
+        $toDoList->setLastAddedTime(Carbon::now());
 
         $this->_em->persist($toDoList);
         $this->_em->flush();
@@ -47,7 +49,7 @@ class ToDoListRepository extends ServiceEntityRepository
             ->setParameter('userId', $userId)
             ->setMaxResults(1)
             ->getQuery()
-            ->getResult()
+            ->getFirstResult()
         ;
     }
 }

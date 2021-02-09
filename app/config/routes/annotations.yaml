@@ -8,8 +8,6 @@ controllers_front:
 
 controllers_back:
     resource: ../../src/Controller/Back
-    name_prefix: admin_
-    prefix: /admin
     type: annotation
 
 kernel:

@@ -7,9 +7,9 @@ use App\Entity\Item;
 use App\Service\MailService;
 use App\Service\ToDoListService;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ToDoListRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use App\Service\ItemService;
 
 /**
  * @ORM\Entity(repositoryClass=ToDoListRepository::class)

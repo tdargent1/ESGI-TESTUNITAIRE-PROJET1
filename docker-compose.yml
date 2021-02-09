@@ -19,7 +19,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data:rw
     ports:
-      - '5432:5432'
+      - '5433:5432'
 
   php:
     image: ${PHP_IMAGE:-iw/php}
@@ -46,7 +46,7 @@ services:
       - ./app/public:/srv/app/public:ro
       #- app-front:/srv/app/public/build:ro
     ports:
-      - "8082:80"
+      - "8083:80"
 
   node:
     image: ${NODE_IMAGE:-iw/node}

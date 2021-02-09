@@ -148,6 +148,24 @@ class ItemServiceTest extends TestCase
     }
 
     /** 
+     * Vérifie que le content de l'item est empty
+     * 
+     * @test 
+     */
+    public function testContentItemLengthUpTo1000Characters()
+    {
+        $this->itemRepository->expects($this->any())
+            ->method('findOneByNameAndUser')
+            ->willReturn(null);
+
+        $this->item->setToDoList($this->todoList);
+
+        $this->item->setContent(str_repeat ("0123456789", 101));
+        
+        $this->assertNotEmpty($this->itemService->isValid($this->item));
+    }
+
+    /** 
      * Vérifie que l'item existe déjà
      * 
      * @test 
