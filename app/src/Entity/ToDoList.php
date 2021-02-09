@@ -34,12 +34,12 @@ class ToDoList
     private $description;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastAddedTime;
 
     /**
-     * @ORM\OneToMany(targetEntity=Item::class, mappedBy="toDoList")
+     * @ORM\OneToMany(targetEntity=Item::class, mappedBy="toDoList", cascade={"persist"})
      */
     private $items;
 

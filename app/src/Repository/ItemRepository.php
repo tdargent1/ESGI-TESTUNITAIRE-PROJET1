@@ -24,18 +24,16 @@ class ItemRepository extends ServiceEntityRepository
     /**
      * @return Item[] Returns an array with the user's todoList
      */
-    public function findOneByNameAndUser(String $name, User $user)
+    public function findOneByNameAndToDoList(String $name, ToDoList $toDoList)
     {
         return $this->createQueryBuilder('item')
-        ->innerJoin(ToDoList::class, 'todoList')
-        ->innerJoin(User::class, 'user')
+        ->innerJoin(ToDoList::class, 'todoList', 'WITH', 'item.toDoList = todoList.id')
         ->andWhere('item.name = :name')
-        ->andWhere('user.id = :user_id')
+        ->andWhere('todoList.id = :todolist_id')
         ->setParameter('name', $name)
-        ->setParameter('user_id', $user->getId())
+        ->setParameter('todolist_id', $toDoList->getId())
         ->getQuery()
         ->getResult();
-        // ->innerJoin(ToDoList::class, 'todoList', Join::WITH, 'item.to_do_list_id = todoList.id')
     }
 
     public function updateItem(Item $item): Item

@@ -43,11 +43,13 @@ class ToDoListService
     {
         $this->checkTimeBetweenAdding($todoList);
         $this->checkIsToDoListFull($todoList);
-        $this->itemService->isValid($item);
+        $this->itemService->isValid($item, $todoList);
 
         $todoList->getItems()->add($item);
         $todoList->setLastAddedTime(Carbon::now());
+       
         $item->setToDoList($todoList);
+        $item->setCreatedAt(Carbon::now());
 
         $this->em->getRepository(ToDoList::class)->updateToDoList($todoList);
 
@@ -123,6 +125,9 @@ class ToDoListService
      */
     public function checkTimeBetweenAdding(ToDoList $todoList)
     {
+        if(empty($todoList->getLastAddedTime()))
+            return;
+        
         $lastAddedTimePlus30min = Carbon::instance($todoList->getLastAddedTime())->addMinutes(30);
 
         if(Carbon::now()->isBefore($lastAddedTimePlus30min))

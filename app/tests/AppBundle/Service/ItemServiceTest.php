@@ -59,7 +59,7 @@ class ItemServiceTest extends TestCase
     public function testItemNotAffectedToToDoList()
     {
         $this->itemRepository->expects($this->any())
-            ->method('findOneByNameAndUser')
+            ->method('findOneByNameAndToDoList')
             ->willReturn($this->item);
 
         $this->expectException(Exception::class);
@@ -75,7 +75,7 @@ class ItemServiceTest extends TestCase
     {
         $this->item->setToDoList($this->todoList);
         $this->itemRepository->expects($this->any())
-            ->method('findOneByNameAndUser')
+            ->method('findOneByNameAndToDoList')
             ->willReturn(null);
         
         $this->assertTrue($this->itemService->checkIfItemNotExistByName($this->item));
@@ -92,7 +92,7 @@ class ItemServiceTest extends TestCase
         $this->item->setToDoList($this->todoList);
 
         $this->itemRepository->expects($this->any())
-            ->method('findOneByNameAndUser')
+            ->method('findOneByNameAndToDoList')
             ->willReturn($item);
 
         $this->assertFalse($this->itemService->checkIfItemNotExistByName($this->item));
@@ -105,7 +105,7 @@ class ItemServiceTest extends TestCase
      */ 
     public function testIsItemValid() {
         $this->itemRepository->expects($this->any())
-            ->method('findOneByNameAndUser')
+            ->method('findOneByNameAndToDoList')
             ->willReturn(null);
         
         $this->item->setToDoList($this->todoList);
@@ -120,7 +120,7 @@ class ItemServiceTest extends TestCase
      */ 
     public function testNameItemEmpty() {
         $this->itemRepository->expects($this->any())
-            ->method('findOneByNameAndUser')
+            ->method('findOneByNameAndToDoList')
             ->willReturn(null);
         
         $this->item->setToDoList($this->todoList);
@@ -137,7 +137,7 @@ class ItemServiceTest extends TestCase
      */ 
     public function testContentItemEmpty() {
         $this->itemRepository->expects($this->any())
-        ->method('findOneByNameAndUser')
+        ->method('findOneByNameAndToDoList')
         ->willReturn(null);
     
         $this->item->setToDoList($this->todoList);
@@ -155,7 +155,7 @@ class ItemServiceTest extends TestCase
     public function testContentItemLengthUpTo1000Characters()
     {
         $this->itemRepository->expects($this->any())
-            ->method('findOneByNameAndUser')
+            ->method('findOneByNameAndToDoList')
             ->willReturn(null);
 
         $this->item->setToDoList($this->todoList);
@@ -172,7 +172,7 @@ class ItemServiceTest extends TestCase
      */ 
     public function testItemAlreadyExist() {
         $this->itemRepository->expects($this->any())
-        ->method('findOneByNameAndUser')
+        ->method('findOneByNameAndToDoList')
         ->willReturn($this->item);
     
         $this->item->setToDoList($this->todoList);

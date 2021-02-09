@@ -23,7 +23,6 @@ class ToDoListRepository extends ServiceEntityRepository
 
     public function updateToDoList(ToDoList $toDoList): ToDoList
     {
-        // $this->_em->persist($toDoList);
         $this->_em->flush();
 
         return $toDoList;
@@ -34,7 +33,6 @@ class ToDoListRepository extends ServiceEntityRepository
         $toDoList = new ToDoList($user);
         $toDoList->setName($name);
         $toDoList->setDescription($description);
-        $toDoList->setLastAddedTime(Carbon::now());
 
         $this->_em->persist($toDoList);
         $this->_em->flush();

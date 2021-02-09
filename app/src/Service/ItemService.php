@@ -4,6 +4,7 @@ namespace App\Service;
 
 use Exception;
 use App\Entity\Item;
+use App\Entity\ToDoList;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ItemService
@@ -20,16 +21,11 @@ class ItemService
      * 
      * @param Item $item
      */
-    public function checkIfItemNotExistByName(Item $item)
+    public function checkIfItemNotExistByName(Item $item, ToDoList $toDoList)
     {
         $itemRepository = $this->em->getRepository(Item::class);
         
-        $todoList = $item->getToDoList();
-
-        if ($todoList == null)
-            throw new Exception('L\'item n\'est lié à aucune TodoList.');
-        
-        return empty($itemRepository->findOneByNameAndUser($item->getName(), $todoList->getOwner()));
+        return empty($itemRepository->findOneByNameAndToDoList($item->getName(), $toDoList));
     }
 
 
@@ -38,14 +34,14 @@ class ItemService
      * 
      * @param Item $item
      */
-    public function isValid(Item $item)
+    public function isValid(Item $item, ToDoList $toDoList)
     {
         $exceptions = [];
 
         if (empty($item->getName()))
             array_push($exceptions, "Nom vide.");
 
-        if (!$this->checkIfItemNotExistByName($item))
+        if (!$this->checkIfItemNotExistByName($item, $toDoList))
             array_push($exceptions, "Nom déjà utilisé.");
 
         if (empty($item->getContent()))
