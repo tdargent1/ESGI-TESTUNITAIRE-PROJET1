@@ -52,21 +52,6 @@ class ItemServiceTest extends TestCase
     }
 
     /** 
-     * test lorsque l'item n'est affecté à aucune todolist
-     * 
-     * @test 
-     */
-    public function testItemNotAffectedToToDoList()
-    {
-        $this->itemRepository->expects($this->any())
-            ->method('findOneByNameAndToDoList')
-            ->willReturn($this->item);
-
-        $this->expectException(Exception::class);
-        $this->itemService->checkIfItemNotExistByName($this->item);
-    }
-
-    /** 
      * Test lorsque aucun item du même nom n'existe
      * 
      * @test 
@@ -78,7 +63,7 @@ class ItemServiceTest extends TestCase
             ->method('findOneByNameAndToDoList')
             ->willReturn(null);
         
-        $this->assertTrue($this->itemService->checkIfItemNotExistByName($this->item));
+        $this->assertTrue($this->itemService->checkIfItemNotExistByName($this->item, $this->todoList));
     }
 
     public function testIfItemExist()
@@ -95,7 +80,7 @@ class ItemServiceTest extends TestCase
             ->method('findOneByNameAndToDoList')
             ->willReturn($item);
 
-        $this->assertFalse($this->itemService->checkIfItemNotExistByName($this->item));
+        $this->assertFalse($this->itemService->checkIfItemNotExistByName($this->item, $this->todoList));
     }
 
     /** 
@@ -110,7 +95,7 @@ class ItemServiceTest extends TestCase
         
         $this->item->setToDoList($this->todoList);
 
-        $this->assertEmpty($this->itemService->isValid($this->item));
+        $this->assertEmpty($this->itemService->isValid($this->item, $this->todoList));
     }
 
     /** 
@@ -127,7 +112,7 @@ class ItemServiceTest extends TestCase
 
         $this->item->setName("");
 
-        $this->assertNotEmpty($this->itemService->isValid($this->item));
+        $this->assertNotEmpty($this->itemService->isValid($this->item, $this->todoList));
     }
 
     /** 
@@ -144,7 +129,7 @@ class ItemServiceTest extends TestCase
 
         $this->item->setContent("");
 
-        $this->assertNotEmpty($this->itemService->isValid($this->item));
+        $this->assertNotEmpty($this->itemService->isValid($this->item, $this->todoList));
     }
 
     /** 
@@ -162,7 +147,7 @@ class ItemServiceTest extends TestCase
 
         $this->item->setContent(str_repeat ("0123456789", 101));
         
-        $this->assertNotEmpty($this->itemService->isValid($this->item));
+        $this->assertNotEmpty($this->itemService->isValid($this->item, $this->todoList));
     }
 
     /** 
@@ -177,6 +162,6 @@ class ItemServiceTest extends TestCase
     
         $this->item->setToDoList($this->todoList);
 
-        $this->assertNotEmpty($this->itemService->isValid($this->item));
+        $this->assertNotEmpty($this->itemService->isValid($this->item, $this->todoList));
     }
 }
