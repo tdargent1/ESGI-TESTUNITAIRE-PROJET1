@@ -7,6 +7,7 @@ use App\Service\ToDoListService;
 use App\Repository\ItemRepository;
 use App\Repository\UserRepository;
 use App\Repository\ToDoListRepository;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -95,6 +96,30 @@ class TDLController extends AbstractController
         } catch (NotEncodableValueException $e) {
             return $this->json([
                 'status' => 400,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @Route("/get", name="get", methods={"GET"})
+     */
+    public function getToDoList(Request $request, ToDoListRepository $toDoListRepository, SerializerInterface $serializer): JsonResponse 
+    {
+        try {
+            $tdl = $toDoListRepository->find($request->query->get('todolist'));
+            
+            if(empty($tld)) {
+                throw new Exception("This ToDoList doesn't exist");
+            }
+
+            $tdl = $serializer->serialize($tdl, 'json', []);
+            $response = new JsonResponse(['data' => $tdl]);
+        } catch (Exception $e) {
+            return $this->json([
+                'status' => 404,
                 'message' => $e->getMessage()
             ]);
         }
