@@ -111,11 +111,40 @@ class TDLController extends AbstractController
         try {
             $tdl = $toDoListRepository->find($request->query->get('todolist'));
             
-            if(empty($tld)) {
+            if(empty($tdl)) {
                 throw new Exception("This ToDoList doesn't exist");
             }
 
             $tdl = $serializer->serialize($tdl, 'json', []);
+            $response = new JsonResponse(['data' => $tdl]);
+        } catch (Exception $e) {
+            return $this->json([
+                'status' => 404,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return $response;
+    }
+
+
+
+    /**
+     * @Route("/get-todolist-user", name="get_todolist_user", methods={"GET"})
+     */
+    public function getToDoListUser(Request $request, ToDoListRepository $toDoListRepository,
+        UserRepository $userRepository, SerializerInterface $serializer): JsonResponse 
+    {
+        try {
+            $tdl = $toDoListRepository->find($request->query->get('todolist'));
+            
+            if(empty($tdl)) {
+                throw new Exception("This ToDoList doesn't exist");
+            }
+
+            $user = $userRepository->find($tdl->getOwner());
+
+            $tdl = $serializer->serialize($user, 'json', []);
             $response = new JsonResponse(['data' => $tdl]);
         } catch (Exception $e) {
             return $this->json([
