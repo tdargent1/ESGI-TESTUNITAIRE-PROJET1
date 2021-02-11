@@ -3,40 +3,29 @@
 namespace App\DataFixtures;
 
 use App\Entity\ToDoList;
-use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class ToDoListFixtures extends Fixture
+
+class ToDoListFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $faker = \Faker\Factory::create();
+        $user = $this->getReference(UserFixtures::USER_REFERENCE);
 
-        $object = (new User())
-            ->setEmail("dev@technique")
-            ->setRoles(["ROLE_ADMIN"])
-            ->setPassword(self::PWD)
-        ;
-        $manager->persist($object);
+        $tdl = (new ToDoList($user))
+            ->setName("nom")
+            ->setDescription("description");
 
-        $users = $manager->getRepository(User::class)->findAll();
-
-        for ($i=0; $i<10; $i++) {
-            shuffle($users);
-
-            $object = (new ToDoList())
-                ->setName($faker->name)
-                ->setContent($faker->paragraph)
-                ->setCreatedAt($faker->dateTime)
-                ->setOwner($users)
-            ;
-            $manager->persist($object);
-
-            if ($i % 5) {
-                $manager->flush();
-            }
-        }
-
+        $manager->persist($tdl);
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return array(
+            UserFixtures::class,
+        );
     }
 }

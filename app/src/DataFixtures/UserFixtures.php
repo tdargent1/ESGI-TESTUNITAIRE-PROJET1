@@ -2,26 +2,26 @@
 
 namespace App\DataFixtures;
 
+use Carbon\Carbon;
 use App\Entity\User;
-use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 
 class UserFixtures extends Fixture
 {
-    // const PWD = test
-    private const PWD = '$argon2id$v=19$m=65536,t=4,p=1$rKB0PNfQjtI/ZBgy+Ia98Q$YvF9EZJ2pQuRFugi9BibV68gjAB8tRqAcbXYjLpnjKY';
+    public const USER_REFERENCE = 'user';
 
     public function load(ObjectManager $manager)
     {
-        $faker = \Faker\Factory::create();
-
-        $object = (new User())
-            ->setEmail("dev@technique")
-            ->setRoles(["ROLE_ADMIN"])
-            ->setPassword(self::PWD)
-        ;
-        $manager->persist($object);
-
+        $user = (new User())
+            ->setFirstName('Ludovic')
+            ->setLastName('Collignon')
+            ->setEmail('lud@gmail.com')
+            ->setPassword('password123')
+            ->setBirthday(Carbon::create(1998, 6, 21));
+            
+        $manager->persist($user);
+        $this->addReference(self::USER_REFERENCE, $user);
         $manager->flush();
     }
 }
